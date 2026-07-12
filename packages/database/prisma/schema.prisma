@@ -1,0 +1,166 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProjectStatus {
+  DRAFT
+  QUEUED
+  EXPLORING
+  PLANNING
+  GENERATING
+  READY
+  FAILED
+  PUBLISHED
+}
+
+enum JobStage {
+  QUEUED
+  EXPLORING
+  PLANNING
+  GENERATING
+  COMPLETE
+  FAILED
+}
+
+model Project {
+  id                    String           @id @default(cuid())
+  name                  String
+  targetUrl             String
+  origin                String
+  status                ProjectStatus    @default(DRAFT)
+  credentialsCiphertext String?          @db.Text
+  explorationPolicy     Json
+  lastError             String?          @db.Text
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  jobs                  ExplorationJob[]
+  pages                 DiscoveredPage[]
+  workflows             Workflow[]
+  chapters              Chapter[]
+  publishedDemo         PublishedDemo?
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model ExplorationJob {
+  id          String    @id @default(cuid())
+  projectId   String
+  stage       JobStage  @default(QUEUED)
+  progress    Int       @default(0)
+  message     String
+  startedAt   DateTime?
+  completedAt DateTime?
+  error       String?   @db.Text
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, createdAt])
+  @@index([stage])
+}
+
+model DiscoveredPage {
+  id              String      @id @default(cuid())
+  projectId       String
+  url             String
+  title           String
+  navigationLabel String?
+  summary         String      @db.Text
+  screenshotUrl   String
+  viewportWidth   Int
+  viewportHeight  Int
+  order           Int
+  capturedAt      DateTime    @default(now())
+  metadata        Json?
+  project         Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  elements        UiElement[]
+  steps           DemoStep[]
+
+  @@unique([projectId, url])
+  @@index([projectId, order])
+}
+
+model UiElement {
+  id           String         @id @default(cuid())
+  pageId       String
+  role         String
+  name         String
+  text         String         @db.Text
+  selector     String         @db.Text
+  x            Float
+  y            Float
+  width        Float
+  height       Float
+  importance   Float
+  safeToClick  Boolean        @default(false)
+  attributes   Json?
+  page         DiscoveredPage @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId, importance])
+}
+
+model Workflow {
+  id          String   @id @default(cuid())
+  projectId   String
+  name        String
+  description String   @db.Text
+  importance  Float
+  pageIds     String[]
+  actionPlan  Json
+  createdAt   DateTime @default(now())
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, importance])
+}
+
+model Chapter {
+  id          String     @id @default(cuid())
+  projectId   String
+  title       String
+  description String     @db.Text
+  order       Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  steps       DemoStep[]
+
+  @@unique([projectId, order])
+  @@index([projectId])
+}
+
+model DemoStep {
+  id            String         @id @default(cuid())
+  chapterId     String
+  pageId         String
+  title          String
+  description    String         @db.Text
+  order          Int
+  selector       String?        @db.Text
+  hotspotX       Float
+  hotspotY       Float
+  hotspotWidth   Float?
+  hotspotHeight  Float?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  chapter        Chapter        @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  page           DiscoveredPage @relation(fields: [pageId], references: [id], onDelete: Restrict)
+
+  @@unique([chapterId, order])
+  @@index([pageId])
+}
+
+model PublishedDemo {
+  id          String   @id @default(cuid())
+  projectId   String   @unique
+  slug        String   @unique
+  snapshot    Json
+  publishedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
