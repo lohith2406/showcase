@@ -17,6 +17,7 @@
     "format": "prettier --write .",
     "db:generate": "npm run db:generate -w @showcase/database",
     "db:migrate": "npm exec -w @showcase/database -- prisma migrate dev",
+    "db:deploy": "npm exec -w @showcase/database -- prisma migrate deploy",
     "db:push": "npm run db:push -w @showcase/database"
   },
   "devDependencies": {

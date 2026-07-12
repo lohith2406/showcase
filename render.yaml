@@ -1,0 +1,38 @@
+# Render Blueprint for the showcase backend.
+# Build MUST run from the monorepo root so turbo compiles the workspace
+# packages (@showcase/contracts, @showcase/database) to dist/ BEFORE the
+# backend's tsc build resolves them.
+services:
+  - type: web
+    name: showcase-backend
+    runtime: node
+    plan: free
+    # Repo root — do NOT set this to apps/backend, or the sibling packages
+    # never get built and tsc fails with "Cannot find module '@showcase/contracts'".
+    rootDir: .
+    # --include=dev is REQUIRED: NODE_ENV=production makes npm skip
+    # devDependencies, but turbo/typescript/prisma (all build-time tools)
+    # live there. Without it the build fails with "turbo: not found".
+    buildCommand: npm install --include=dev && npm run build && npm run db:deploy
+    startCommand: npm run start -w @showcase/backend
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Secrets — set these in the Render dashboard (marked sync:false so they
+      # are not committed and Render prompts you for them).
+      - key: DATABASE_URL
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-5-mini
+      - key: CREDENTIAL_ENCRYPTION_KEY
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: ASSET_STORAGE_PROVIDER
+        value: local
+      - key: BLOB_READ_WRITE_TOKEN
+        sync: false
+      - key: ALLOW_PRIVATE_TARGETS
+        value: "false"

@@ -1,5 +1,19 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalPassThroughEnv": [
+    "DATABASE_URL",
+    "OPENAI_API_KEY",
+    "OPENAI_MODEL",
+    "CREDENTIAL_ENCRYPTION_KEY",
+    "FRONTEND_URL",
+    "ASSET_STORAGE_PROVIDER",
+    "ASSET_PUBLIC_URL",
+    "BLOB_READ_WRITE_TOKEN",
+    "ALLOW_PRIVATE_TARGETS",
+    "NEXT_PUBLIC_API_URL",
+    "NODE_ENV",
+    "PORT"
+  ],
   "tasks": {
     "build": { "dependsOn": ["^build"], "outputs": [".next/**", "dist/**"] },
     "dev": { "cache": false, "persistent": true },
