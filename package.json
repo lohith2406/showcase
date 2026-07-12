@@ -1,0 +1,24 @@
+{
+  "name": "showcase-ai",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "npm@10.9.2",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "db:generate": "npm run db:generate -w @showcase/database",
+    "db:push": "npm run db:push -w @showcase/database"
+  },
+  "devDependencies": {
+    "prettier": "3.6.2",
+    "turbo": "2.10.4",
+    "typescript": "5.9.3"
+  },
+  "engines": {"node": ">=22.19.0"}
+}
