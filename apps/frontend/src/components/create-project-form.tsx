@@ -138,10 +138,36 @@ export function CreateProjectForm() {
                   autoComplete="current-password"
                 />
               </label>
-              <p className="text-xs leading-5 text-[var(--muted)] sm:col-span-2">
-                Credentials are encrypted for this run and deleted the moment
-                exploration finishes.
-              </p>
+              <div className="border-t border-[var(--line)] pt-4 sm:col-span-2">
+                <p className="eyebrow mb-3">Authenticated exploration</p>
+                <ol className="grid gap-3 text-xs leading-5 text-[var(--muted)] sm:grid-cols-3">
+                  <li className="flex gap-2.5">
+                    <span className="mono text-[var(--focus)]">01</span>
+                    <span>
+                      Enter the page you want shown after login, such as your
+                      dashboard.
+                    </span>
+                  </li>
+                  <li className="flex gap-2.5">
+                    <span className="mono text-[var(--focus)]">02</span>
+                    <span>
+                      The agent signs in once with these temporary credentials.
+                    </span>
+                  </li>
+                  <li className="flex gap-2.5">
+                    <span className="mono text-[var(--focus)]">03</span>
+                    <span>
+                      Capture begins only after the authenticated page is
+                      reached.
+                    </span>
+                  </li>
+                </ol>
+                <p className="mt-3 text-[11px] leading-5 text-[var(--faint)]">
+                  Credentials are encrypted for this run and deleted when
+                  exploration ends. If sign-in fails, no login-page demo is
+                  created.
+                </p>
+              </div>
             </div>
           )}
 
