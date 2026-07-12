@@ -1,10 +1,10 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum ProjectStatus {
@@ -33,6 +33,7 @@ model Project {
   targetUrl             String
   origin                String
   status                ProjectStatus    @default(DRAFT)
+  sampleMode            Boolean          @default(false)
   credentialsCiphertext String?          @db.Text
   explorationPolicy     Json
   lastError             String?          @db.Text

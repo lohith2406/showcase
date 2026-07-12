@@ -9,6 +9,9 @@ coverage/
 .playwright/
 artifacts/
 *.log
+*.tsbuildinfo
 .DS_Store
 .turbo/
+packages/database/generated/
+packages/database/src/generated/
 packages/database/generated/

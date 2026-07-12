@@ -16,13 +16,12 @@ export const credentialsSchema = z
   })
   .strict();
 
-export const explorationPolicySchema = z
-  .object({
-    maxPages: z.number().int().min(1).max(30).default(12),
-    maxActionsPerPage: z.number().int().min(1).max(20).default(8),
-    navigationTimeoutMs: z.number().int().min(5_000).max(120_000).default(30_000),
-    sameOriginOnly: z.boolean().default(true),
-  });
+export const explorationPolicySchema = z.object({
+  maxPages: z.number().int().min(1).max(30).default(12),
+  maxActionsPerPage: z.number().int().min(1).max(20).default(8),
+  navigationTimeoutMs: z.number().int().min(5_000).max(120_000).default(30_000),
+  sameOriginOnly: z.boolean().default(true),
+});
 
 export const createProjectSchema = z
   .object({
@@ -45,7 +44,14 @@ export const projectStatusSchema = z.enum([
   "PUBLISHED",
 ]);
 
-export const jobStageSchema = z.enum(["QUEUED", "EXPLORING", "PLANNING", "GENERATING", "COMPLETE", "FAILED"]);
+export const jobStageSchema = z.enum([
+  "QUEUED",
+  "EXPLORING",
+  "PLANNING",
+  "GENERATING",
+  "COMPLETE",
+  "FAILED",
+]);
 
 export const normalizedRectSchema = z
   .object({
@@ -105,7 +111,10 @@ export const patchStepSchema = z
     selector: z.string().min(1).nullable().optional(),
   })
   .strict()
-  .refine((value) => Object.keys(value).length > 0, "At least one field is required");
+  .refine(
+    (value) => Object.keys(value).length > 0,
+    "At least one field is required",
+  );
 
 export const publishDemoSchema = z.object({
   slug: z

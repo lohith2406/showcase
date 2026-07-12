@@ -20,7 +20,10 @@ describe("createProjectSchema", () => {
 
   it("rejects non-HTTP protocols", () => {
     expect(() =>
-      createProjectSchema.parse({ name: "Unsafe", targetUrl: "file:///etc/passwd" }),
+      createProjectSchema.parse({
+        name: "Unsafe",
+        targetUrl: "file:///etc/passwd",
+      }),
     ).toThrow();
   });
 });
@@ -54,7 +57,12 @@ describe("walkthrough editing", () => {
   });
 
   it("accepts a focused partial step update", () => {
-    expect(patchStepSchema.parse({ title: "Invite your team", hotspot: { x: 0.2, y: 0.3 } })).toEqual({
+    expect(
+      patchStepSchema.parse({
+        title: "Invite your team",
+        hotspot: { x: 0.2, y: 0.3 },
+      }),
+    ).toEqual({
       title: "Invite your team",
       hotspot: { x: 0.2, y: 0.3 },
     });
